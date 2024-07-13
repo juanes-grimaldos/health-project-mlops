@@ -4,8 +4,8 @@ Estimating Time from Referral to Procurement using Organ Retrieval and Collectio
 This project is linked with mlops datatalks first attempt to [MLOps Zoomcamp](https://github.com/DataTalksClub/mlops-zoomcamp) 2024 course!.
 
 
-To download the data you need to run the following code: 
+To download the data you need to run the following code. Note that you need to change the user to your credential: 
 ```bash
-wget -r -N -c -np --ask-user --ask-password https://physionet.org/files/orchid/2.0.0/referrals.csv
+wget -r -N -c -np --user juanesgrimaldos --ask-password https://physionet.org/files/orchid/2.0.0/referrals.csv
 ```
 
