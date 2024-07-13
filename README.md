@@ -6,6 +6,6 @@ This project is linked with mlops datatalks first attempt to [MLOps Zoomcamp](ht
 
 To download the data you need to run the following code: 
 ```bash
-wget -r -N -c -np --user juanesgrimaldos --ask-password https://physionet.org/files/orchid/2.0.0/referrals.csv
+wget -r -N -c -np --ask-user --ask-password https://physionet.org/files/orchid/2.0.0/referrals.csv
 ```
 
