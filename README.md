@@ -11,7 +11,7 @@ wget --user=USERNAME --ask-password -O src/data/referrals.csv https://physionet.
 referrals.csv
 ```
 
-In this repository wer use MLflow locally, all data is store in SQLite. To generate the database, this code was executed:
+In this repository wer use MLflow locally, all data is store in SQLite. To generate the database, and run the server locally we need to run the code below on the terminal:
 ```bash
-python -m mlflow ui --backend-store-uri sqlite:///src/mlflow/mlflow.db
+python -m mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./artifacts_local
 ```
