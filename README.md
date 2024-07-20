@@ -13,5 +13,5 @@ referrals.csv
 
 In this repository wer use MLflow locally, all data is store in SQLite. To generate the database, this code was executed:
 ```bash
-python -m mlflow ui --backend-store-uri sqlite:///src/data/mlflow/mlflow.db
+python -m mlflow ui --backend-store-uri sqlite:///src/mlflow/mlflow.db
 ```
