@@ -15,3 +15,13 @@ In this repository wer use MLflow locally, all data is store in SQLite. To gener
 ```bash
 python -m mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./artifacts_local
 ```
+
+I run mage-ai, so to run the server I ran this code:
+
+```bash
+git clone https://github.com/mage-ai/compose-quickstart.git mage-quickstart
+cd mage-quickstart
+cp dev.env .env
+rm dev.env
+docker compose up
+```
