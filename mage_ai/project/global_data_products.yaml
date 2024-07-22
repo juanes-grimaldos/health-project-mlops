@@ -1,9 +1,0 @@
-load_data:
-  object_type: pipeline
-  object_uuid: load_tranform_pipeline
-  outdated_after:
-    weeks: 2
-  repo_path: /home/src/project
-  settings:
-    export_ti_split_20_:
-      partitions: 1
