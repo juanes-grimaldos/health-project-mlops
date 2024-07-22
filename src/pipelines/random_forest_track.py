@@ -23,7 +23,7 @@ def run_optimization_rf(
     - X_val (pd.DataFrame): The validation data features.
     - y_val (pd.DataFrame): The validation data labels.
     """
-    mlflow.set_tracking_uri("sqlite:///mlflow/mlflow.db")
+    mlflow.set_tracking_uri("sqlite:///../src/mlflow/mlflow.db")
     mlflow.set_experiment("random-forest")
 
     def objective(params):
@@ -38,15 +38,15 @@ def run_optimization_rf(
         return {'loss': rmse, 'status': STATUS_OK}
 
     search_space = {
-        'max_depth': scope.int(hp.quniform('max_depth', 1, 20, 1)),
-        'n_estimators': scope.int(hp.quniform('n_estimators', 10, 50, 1)),
+        'max_depth': scope.int(hp.quniform('max_depth', 1, 30, 1)),
+        'n_estimators': scope.int(hp.quniform('n_estimators', 10, 100, 1)),
         'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 10, 1)),
         'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 4, 1)),
         'random_state': 42
     }
 
     rstate = np.random.default_rng(42)  # for reproducible results
-    fmin(
+    best_hyperparameters = fmin(
         fn=objective,
         space=search_space,
         algo=tpe.suggest,
@@ -54,10 +54,23 @@ def run_optimization_rf(
         trials=Trials(),
         rstate=rstate
     )
+    
+    # fmin will return max_depth as a float for some reason
+    for key in [
+        'max_depth',
+        'max_iter',
+        'min_samples_leaf',
+    ]:
+        if key in best_hyperparameters:
+            best_hyperparameters[key] = int(best_hyperparameters[key])
+    
+    return best_hyperparameters     
 
 # Load and preprocess data
 result = train_models()
 
-run_optimization_rf(
+result = run_optimization_rf(
     10, result['X_train'], result['y_train'], 
     result['X_test'], result['y_test'])
+
+print(result)

@@ -8,7 +8,9 @@ __pycache__/
 
 # C extensions
 *.so
-
+/project
+/project/.gitignore
+/mage_data
 # Distribution / packaging
 .Python
 build/
