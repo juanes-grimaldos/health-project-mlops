@@ -1,8 +1,7 @@
 from sklearn.model_selection import train_test_split
-from pipelines.load_data import load_and_preprocess_data
 import pandas as pd
 
-def train_models() -> dict:
+def split_datasets(data: pd.DataFrame) -> dict:
     """
     Trains a model using the preprocessed data.
 
@@ -15,7 +14,7 @@ def train_models() -> dict:
         'WeightKg', 'blood_type', 'brain_death'
     ]
 
-    df_model = load_and_preprocess_data()
+    df_model = data.copy()
 
     X = pd.get_dummies(df_model[features], drop_first=True)
     y = df_model['time_to_procurement']

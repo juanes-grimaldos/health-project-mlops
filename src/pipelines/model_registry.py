@@ -19,16 +19,16 @@ class ModelRegistry:
         Returns:
             None
         """
+        self.experiment = experiment_name
         mlflow.set_tracking_uri(tracking_uri)
         mlflow.set_experiment(experiment_name)
     
-    @staticmethod
-    def register_model(model_name):
+
+    def register_model(self, model_name):
         """
         Register a model in MLflow and transition its stage.
 
         Args:
-            model_uri (str): The URI of the model to register.
             model_name (str): The name of the model.
 
         Returns:
@@ -37,12 +37,12 @@ class ModelRegistry:
 
         client = MlflowClient()
 
-        experiment = client.get_experiment_by_name('random-forest')
+        experiment = client.get_experiment_by_name(self.experiment)
         best_run = client.search_runs(
             experiment_ids=experiment.experiment_id,
             run_view_type=ViewType.ACTIVE_ONLY,
             max_results=1,
-            order_by=["metrics.test_rmse ASC"]
+            order_by=["metrics.rmse ASC"]
         )[0]
 
         run_id = best_run.info.run_id

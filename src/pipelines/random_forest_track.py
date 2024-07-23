@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
-from pipelines.train_models import train_models
 
 def run_optimization_rf(
     num_trials: int,
@@ -23,7 +22,7 @@ def run_optimization_rf(
     - X_val (pd.DataFrame): The validation data features.
     - y_val (pd.DataFrame): The validation data labels.
     """
-    mlflow.set_tracking_uri("sqlite:///../src/mlflow/mlflow.db")
+    mlflow.set_tracking_uri("sqlite:///mlflow/mlflow.db")
     mlflow.set_experiment("random-forest")
 
     def objective(params):
@@ -65,12 +64,3 @@ def run_optimization_rf(
             best_hyperparameters[key] = int(best_hyperparameters[key])
     
     return best_hyperparameters     
-
-# Load and preprocess data
-result = train_models()
-
-result = run_optimization_rf(
-    10, result['X_train'], result['y_train'], 
-    result['X_test'], result['y_test'])
-
-print(result)
