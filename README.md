@@ -13,6 +13,7 @@ referrals.csv
 
 ```bash
 source .venv/bin/activate
+source .venv/Scripts/activate
 ```
 
 In this repository wer use MLflow locally, all data is store in SQLite. To generate the database, and run the server locally we need to run the code below on the terminal:
