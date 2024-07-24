@@ -11,6 +11,10 @@ wget --user=USERNAME --ask-password -O src/data/referrals.csv https://physionet.
 referrals.csv
 ```
 
+```bash
+source .venv/bin/activate
+```
+
 In this repository wer use MLflow locally, all data is store in SQLite. To generate the database, and run the server locally we need to run the code below on the terminal:
 ```bash
 python -m mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./artifacts_local
@@ -22,5 +26,9 @@ for this case I use Prefect.
 ```bash
 prefect server start
 python workflow.py
+```
 
+```bash
+prefect config set PREFECT_API_URL="http://127.0.0.1:4200/api"
+prefect profile use default
 ```
