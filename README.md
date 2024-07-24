@@ -24,12 +24,17 @@ python -m mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --def
 # Workflow
 for this case I use Prefect.
 
+to run the flow, follow this steps:
 ```bash
 prefect server start
+cd src
 python workflow.py
 ```
 
+to deploy the workflow follow this steps
 ```bash
 prefect config set PREFECT_API_URL="http://127.0.0.1:4200/api"
 prefect profile use default
+prefect deploy
+prefect deploy -n workflow
 ```
