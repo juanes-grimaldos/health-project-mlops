@@ -15,3 +15,12 @@ In this repository wer use MLflow locally, all data is store in SQLite. To gener
 ```bash
 python -m mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./artifacts_local
 ```
+
+# Workflow
+for this case I use Prefect.
+
+```bash
+prefect server start
+python workflow.py
+
+```
