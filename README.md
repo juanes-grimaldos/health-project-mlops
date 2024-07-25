@@ -22,19 +22,13 @@ python -m mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --def
 ```
 
 # Workflow
-for this case I use Prefect.
-
-to run the flow, follow this steps:
+for this case I use Prefect, to run the flow, following this steps:
 ```bash
 prefect server start
-cd src
-python workflow.py
+docker build -t workflow:1 -f workflow.Dockerfile 
+docker run --network="host" -e PREFECT_API_URL=http://host.docker.internal:4200/api workflow:1
 ```
 
-to deploy the workflow follow this steps
-```bash
-prefect config set PREFECT_API_URL="http://127.0.0.1:4200/api"
-prefect profile use default
-prefect deploy
-prefect deploy -n workflow
-```
+First I need to start the server, it could be locally or on a actual server.
+Then a image is deploy in which all the workflow is deployed.
+The deployment is set to run every 2 minutes, but it could be sent a run schedule with docker command.

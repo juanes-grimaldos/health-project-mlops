@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Prefect Server
+  prefect_server:
+    image: prefecthq/prefect:2-python3.10
+    restart: always
+    command: prefect server start
+    environment:
+      - PREFECT_API_URL=http://0.0.0.0:4200/api  # Access server on localhost
+    ports:
+      - 4200:4200
+  workflow:
+    build: 
+      context: .
+      dockerfile: workflow.Dockerfile
+    environment:
+      - PREFECT_API_URL=http://prefect_server:4200/api  # Access server using service name
+    networks:
+      - prefect_network
+  mlflow:
+    build:
+      context: .
+      dockerfile: mlflow.Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - "${PWD}/mlflow_data:/home/mlflow_data/"
+    networks:
+      - prefect_network
+
+networks:
+  prefect_network:
+    driver: bridge

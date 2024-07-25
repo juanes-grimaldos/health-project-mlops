@@ -14,7 +14,7 @@ def load_data():
 @task
 def train_model(datasets):
     best_hyperparameters = run_optimization_rf(
-        50, 
+        10, 
         datasets['X_train'], 
         datasets['y_train'], 
         datasets['X_test'], 
@@ -42,5 +42,13 @@ def main_flow(
     logging.info(f"Best hyperparameters: {best_hyper_params}")
     register_model(mlflow_path, experiment)
 
+
+
 if __name__ == "__main__":
-    main_flow()
+    main_flow.serve(
+        name="src", 
+        cron="*/2 * * * *",
+        tags=["mlops", "tracking"],
+        description="keep track on the model performance",
+        version="0.1.0",
+        )
