@@ -27,5 +27,16 @@ services:
     networks:
       - backend-server
 
+  mlflow:
+    build:
+      context: .
+      dockerfile: mlflow.dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - "${PWD}/mlflow_data:/home/mlflow_data/"
+    networks:
+      - backend-server
+
 networks:
   backend-server:
