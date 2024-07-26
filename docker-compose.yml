@@ -18,7 +18,9 @@ services:
       - backend-server
 
   prefect-worker:
-    build: .
+    build:
+      context: .
+      dockerfile: workflow.dockerfile
     environment:
       <<: *default-environment
       PREFECT_API_URL: "http://prefect:4200/api"  # Override for worker to use service name
