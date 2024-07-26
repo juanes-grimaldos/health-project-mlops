@@ -11,3 +11,5 @@ On this project you could upload to a cloud using docker compose up with the doc
 docker-compose up
 ```
 In case the workflow service is not running, run the container again
+
+docker-compose -f docker-compose.gra.yml up --build
