@@ -1,5 +1,6 @@
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.pyll import scope
+import os
 import mlflow
 import numpy as np
 import pandas as pd
@@ -22,7 +23,7 @@ def run_optimization_rf(
     - X_val (pd.DataFrame): The validation data features.
     - y_val (pd.DataFrame): The validation data labels.
     """
-    mlflow.set_tracking_uri("sqlite:///mlflow/mlflow.db")
+    mlflow.set_tracking_uri(os.getenv("MLFLOW_URI"))
     mlflow.set_experiment("random-forest")
 
     def objective(params):

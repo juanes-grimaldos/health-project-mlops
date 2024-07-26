@@ -4,6 +4,7 @@ x-environment: &default-environment
   PREFECT_API_URL: "http://127.0.0.1:4200/api"
   PREFECT_UI_URL: "http://127.0.0.1:4200/api"
   PREFECT_SERVER_API_HOST: "0.0.0.0"
+  MLFLOW_URI: "http://mlflow:5000"
 
 services:
   prefect:
@@ -31,6 +32,8 @@ services:
     build:
       context: .
       dockerfile: mlflow.dockerfile
+    environment:
+      <<: *default-environment
     ports:
       - "5000:5000"
     volumes:

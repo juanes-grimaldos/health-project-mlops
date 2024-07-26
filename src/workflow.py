@@ -1,3 +1,4 @@
+import os
 from prefect import task, flow
 from pipelines.load_data import load_and_preprocess_data
 from pipelines.split_datasets import split_datasets
@@ -33,7 +34,7 @@ def register_model(uri, experiment_name):
 
 @flow
 def main_flow(
-    mlflow_path: str = "sqlite:///mlflow/mlflow.db",
+    mlflow_path: str = os.getenv("MLFLOW_URI"),
     experiment: str = "random-forest",
 ) -> None:
     """The main training pipeline"""
