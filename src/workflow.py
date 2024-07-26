@@ -50,5 +50,5 @@ if __name__ == "__main__":
         cron="*/2 * * * *",
         tags=["mlops", "tracking"],
         description="keep track on the model performance",
-        version="0.1.0",
+        version="0.1.0"
         )
