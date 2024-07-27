@@ -20,6 +20,7 @@ class ModelRegistry:
             None
         """
         self.experiment = experiment_name
+        self.tracking_uri = tracking_uri
         mlflow.set_tracking_uri(tracking_uri)
         mlflow.set_experiment(experiment_name)
     
@@ -49,14 +50,14 @@ class ModelRegistry:
 
         best_run.data.metrics
 
-        model_uri = f"runs:/{run_id}/model"
+        model_uri = f"runs:/{run_id}/sklearn-model"
         best_run_test_rmse = best_run.data.metrics["rmse"]
         logging.info(f"Best Run Test RMSE:{best_run_test_rmse}")
 
         mlflow.register_model(model_uri=model_uri, name=model_name)
     
-    @staticmethod
-    def change_stage_model(model_name, new_stage, model_version):
+
+    def change_stage_model(self, model_name, new_stage, model_version):
         """
         Change the stage of a model in the model registry.
 
@@ -75,7 +76,7 @@ class ModelRegistry:
         if new_stage not in valid_stages:
             raise ValueError("Invalid stage. Please choose one of: None, Staging, Production, Archived")
 
-        client = MlflowClient()
+        client = MlflowClient(tracking_uri=self.tracking_uri)
 
         latest_versions = client.get_latest_versions(name=model_name)
 

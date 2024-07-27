@@ -8,3 +8,7 @@ mlflow==2.14.3
 httpx
 prefect>=2.12.0
 pytest
+psycopg
+psycopg_binary
+evidently
+matplotlib

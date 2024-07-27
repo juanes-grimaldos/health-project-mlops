@@ -22,6 +22,7 @@ def train_model(datasets):
         datasets['y_test']
     )
     return best_hyperparameters
+    # TODO: we monitor the data here
 
 @task
 def register_model(uri, experiment_name):
@@ -48,7 +49,7 @@ def main_flow(
 if __name__ == "__main__":
     main_flow.serve(
         name="src", 
-        cron="*/2 * * * *",
+        cron="*/5 * * * *",
         tags=["mlops", "tracking"],
         description="keep track on the model performance",
         version="0.1.0"
