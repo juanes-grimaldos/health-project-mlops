@@ -1,29 +1,59 @@
 import io
 import pandas as pd
 import requests
+import logging
+import os
+import subprocess
 
 def load_and_preprocess_data() -> pd.DataFrame:
     """
     Load and preprocess data from a CSV file.
 
     Returns:
-        pandas.DataFrame: The preprocessed DataFrame containing filtered and transformed data.
+        pandas.DataFrame: The preprocessed DataFrame containing filtered and 
+        transformed data.
     """
     url = "https://physionet.org/files/orchid/2.0.0/referrals.csv?download"
-    payload = {}
+    cookies = os.getenv("COOKIE_API_REQUEST")
     headers = {
-    'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3',
-    'Referer': 'https://physionet.org/content/orchid/2.0.0/',
-    'Cookie': '_ga=GA1.2.263637740.1720827977; _gid=GA1.2.568479628.1720827977; _ga_YKC8ZQQ4FF=GS1.1.1720884389.2.0.1720884389.0.0.0; sessionid=mhqb7hzqqd5wr3czmywgzkgmd6ofynfq; csrftoken=WMtkvE71RGbcaSwET3WXCsuq5lAJdXMM',
-    'Upgrade-Insecure-Requests': '1',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-User': '?1',
-    'Priority': 'u=0, i'
+        'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Referer': 'https://physionet.org/content/orchid/2.0.0/',
+        'Cookie': cookies,
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-User': '?1',
+        'Priority': 'u=0, i',
+        'TE': 'trailers'
     }
-    response = requests.request("GET", url, headers=headers, data=payload)
-    df = pd.read_csv(io.StringIO(response.text), sep=',')
+
+    response = requests.request("GET", url, headers=headers)
+    if response.status_code == 200:
+        logging.info("File downloaded successfully.")
+        df = pd.read_csv(io.StringIO(response.text), sep=',')
+        df_pre = preprocess_data(df)
+        return df_pre
+    elif response.status_code == 403:
+        logging.error("403 Forbidden error. Trying with a different method.")
+        if cookies is None:
+            logging.error("Environment variable"
+                          "COOKIE_API_REQUEST must be set.")
+        return fallback_download()
+    else:
+        response.raise_for_status()
+
+
+def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Preprocess the data by filtering and transforming it.
+    
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+        
+    Returns:
+        pd.DataFrame: The preprocessed DataFrame.
+    """
 
     # Filter data
     tr = 'time_referred'
@@ -51,3 +81,41 @@ def load_and_preprocess_data() -> pd.DataFrame:
 
     # Return the preprocessed DataFrame
     return df_model
+
+def fallback_download() -> pd.DataFrame:
+    """
+    Fallback function to download the CSV file using wget and 
+    load it into a pandas DataFrame.
+
+    Returns:
+        pandas.DataFrame: The DataFrame containing the data from the 
+        downloaded CSV file.
+    """
+    url = "https://physionet.org/files/orchid/2.0.0/referrals.csv"
+    output_file = "referrals.csv"
+
+    # Retrieve the username and password from environment variables
+    username = os.getenv("PHYSIONET_USERNAME")
+    password = os.getenv("PHYSIONET_PASSWORD")
+
+    if username is None or password is None:
+        logging.error("Environment variables "
+                      "PHYSIONET_USERNAME and PHYSIONET_PASSWORD must be set.")
+        raise ValueError(
+            "Environment variables PHYSIONET_USERNAME "
+            " and PHYSIONET_PASSWORD must be set")
+
+    # Run the wget command to download the file
+    command = f'wget --user="{username}" --password="{password}" "{url}" -O {output_file}'
+    subprocess.run(command, shell=True, check=True)
+    
+    # Load the CSV file into a Pandas DataFrame
+    df = pd.read_csv(output_file)
+    df_pre = preprocess_data(df)
+    return df_pre
+
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+    load_and_preprocess_data()
