@@ -36,7 +36,7 @@ def load_and_preprocess_data() -> pd.DataFrame:
         return df_pre
     elif response.status_code == 403:
         logging.error("403 Forbidden error. Trying with a different method.")
-        if cookies is None:
+        if cookies is None and  not os.path.isfile("referrals.csv"):
             logging.error("Environment variable"
                           "COOKIE_API_REQUEST must be set.")
         return fallback_download()
@@ -99,17 +99,22 @@ def fallback_download() -> pd.DataFrame:
     password = os.getenv("PHYSIONET_PASSWORD")
 
     if username is None or password is None:
-        logging.error("Environment variables "
-                      "PHYSIONET_USERNAME and PHYSIONET_PASSWORD must be set.")
-        raise ValueError(
-            "Environment variables PHYSIONET_USERNAME "
-            " and PHYSIONET_PASSWORD must be set")
-
-    # Run the wget command to download the file
-    command = f'wget --user="{username}" --password="{password}" "{url}" -O {output_file}'
-    subprocess.run(command, shell=True, check=True)
+        logging.error("Environment variables \n"
+                      "PHYSIONET_USERNAME and PHYSIONET_PASSWORD must be set."
+                      "\n searching for local file...")
     
-    # Load the CSV file into a Pandas DataFrame
-    df = pd.read_csv(output_file)
-    df_pre = preprocess_data(df)
-    return df_pre
+    if os.path.isfile(output_file):
+        logging.info("File found. Loading the file.")
+        df = pd.read_csv(output_file)
+        df_pre = preprocess_data(df)
+        return df_pre
+    else:
+        logging.info("File not found. Downloading the file.")
+        # Run the wget command to download the file
+        command = f'wget --user="{username}" --password="{password}" "{url}" -O {output_file}'
+        subprocess.run(command, shell=True, check=True)
+        
+        # Load the CSV file into a Pandas DataFrame
+        df = pd.read_csv(output_file)
+        df_pre = preprocess_data(df)
+        return df_pre
