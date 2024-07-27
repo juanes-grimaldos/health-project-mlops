@@ -113,9 +113,3 @@ def fallback_download() -> pd.DataFrame:
     df = pd.read_csv(output_file)
     df_pre = preprocess_data(df)
     return df_pre
-
-if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s'
-    )
-    load_and_preprocess_data()
