@@ -57,14 +57,12 @@ class ModelRegistry:
         mlflow.register_model(model_uri=model_uri, name=model_name)
     
 
-    def change_stage_model(self, model_name, new_stage, model_version):
+    def get_model_version(self, model_name):
         """
-        Change the stage of a model in the model registry.
+        Get the version of a model in MLflow.
 
         Args:
             model_name (str): The name of the model.
-            new_stage (str): The new stage to assign to the model. Must be one of: None, Staging, Production, Archived.
-            model_version (str): The version of the model to update.
 
         Raises:
             ValueError: If the new_stage is not one of the valid stages.
@@ -72,29 +70,11 @@ class ModelRegistry:
         Returns:
             None
         """
-        valid_stages = [None, "Staging", "Production", "Archived"]
-        if new_stage not in valid_stages:
-            raise ValueError("Invalid stage. Please choose one of: None, Staging, Production, Archived")
 
         client = MlflowClient(tracking_uri=self.tracking_uri)
 
-        latest_versions = client.get_latest_versions(name=model_name)
-
-        for version in latest_versions:
-            logging.info(
-                f"version: {version.version}, stage: {version.current_stage}"
-                )
-
-        
-        client.transition_model_version_stage(
-            name=model_name,
-            version=model_version,
-            stage=new_stage,
-            archive_existing_versions=False
-        )
-
-        
-        for version in latest_versions:
-            logging.info(
-                f"version: {version.version}, stage: {version.current_stage}"
-                )
+        latest_versions = client.get_latest_versions(name=model_name)[0]
+        model_version = latest_versions.version
+        model_uri = f"models:/{model_name}/{model_version}"
+        model = mlflow.pyfunc.load_model(model_uri)
+        return model
