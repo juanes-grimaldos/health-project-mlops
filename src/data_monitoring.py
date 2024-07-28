@@ -44,7 +44,7 @@ model_registry = ModelRegistry(
 	tracking_uri=uri,
 	experiment_name=experiment_name
 )
-model = model_registry.get_model_version("random-forest")
+
 
 data = load_and_preprocess_data()
 val_data = split_datasets(data)['X_test']
@@ -86,6 +86,7 @@ def prep_db():
 def calculate_metrics_postgresql(curr, i):
 	val_data_temp = val_data.copy()
 	train_data_temp = train_data.copy()
+	model = model_registry.get_model_version("random-forest")
 	val_data_temp['prediction'] = model.predict(val_data_temp)
 	train_data_temp['prediction'] = model.predict(train_data_temp)
 
@@ -122,6 +123,3 @@ def batch_monitoring_backfill():
 				last_send = last_send + datetime.timedelta(seconds=10)
 			logging.info("data sent")
 
-
-if __name__ == '__main__':
-	batch_monitoring_backfill()
