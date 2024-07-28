@@ -6,6 +6,17 @@ x-environment: &default-environment
   PREFECT_SERVER_API_HOST: "0.0.0.0"
   MLFLOW_URI: "http://mlflow:5000"
   COOKIE_API_REQUEST: "_ga=GA1.2.263637740.1720827977; _ga_YKC8ZQQ4FF=GS1.1.1722094447.5.1.1722094879.0.0.0; csrftoken=dupoQ7jFXMN2dE6MrVvg2F08528jeroc; _gid=GA1.2.1133650335.1722094448; sessionid=nx4uuw1er9ox7aqf6gmld8cc2u2fkgzx"
+  DB_HOST: db
+  DB_PORT: 5432
+  DB_USER: postgres
+  DB_PASSWORD: example
+  DB_NAME: test
+  METRIC_TABLE: dummy_metrics
+
+networks:
+  backend-server:
+  back-tier:
+  front-tier:
 
 services:
   prefect:
@@ -42,5 +53,36 @@ services:
     networks:
       - backend-server
 
-networks:
-  backend-server:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
+    networks:
+      - back-tier
+      - backend-server
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - back-tier
+      - front-tier
+
+  grafana:
+    image: grafana/grafana-enterprise
+    user: "472"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      - ./config/grafana_dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./dashboards:/opt/grafana/dashboards
+    networks:
+      - back-tier
+      - front-tier
+    restart: always
