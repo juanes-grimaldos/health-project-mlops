@@ -34,7 +34,7 @@ def register_model(uri, experiment_name):
     model_registry.register_model("random-forest")
 
 @flow
-def main_flow(
+def workflow(
     mlflow_path: str = os.getenv("MLFLOW_URI"),
     experiment: str = "random-forest",
 ) -> None:
@@ -43,14 +43,3 @@ def main_flow(
     best_hyper_params = train_model(datasets)
     logging.info(f"Best hyperparameters: {best_hyper_params}")
     register_model(mlflow_path, experiment)
-
-
-
-if __name__ == "__main__":
-    main_flow.serve(
-        name="src", 
-        cron="*/15 * * * *",
-        tags=["mlops", "tracking"],
-        description="keep track on the model performance",
-        version="0.1.0"
-        )
