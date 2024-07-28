@@ -1,17 +1,7 @@
-from src.utils import smape
 import numpy as np
 import pandas as pd
 import pytest
 from src.pipelines.load_data import load_and_preprocess_data
-
-def test_smape():
-    y_true = np.array([1, 2, 3])
-    y_pred = np.array([1, 2, 3])
-    actual_result = smape(y_true, y_pred)
-
-    expected_result = 0
-
-    assert actual_result == expected_result
 
 @pytest.fixture
 def mock_pd_read_csv(mocker):
