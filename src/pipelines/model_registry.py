@@ -1,8 +1,8 @@
 from mlflow.entities import ViewType
 from mlflow.tracking import MlflowClient
 import logging
-import logging
 import mlflow
+from joblib import load
 
 logging.basicConfig(level=logging.INFO)
 
@@ -73,7 +73,14 @@ class ModelRegistry:
 
         client = MlflowClient(tracking_uri=self.tracking_uri)
 
-        latest_versions = client.get_latest_versions(name=model_name)[0]
+        try:
+            latest_versions = client.get_latest_versions(name=model_name)[0]
+        except Exception as e:
+            logging.error(f"Error occurred while getting latest versions: {e}")
+            path = 'start_models/random_forest.pkl'
+            latest_versions = load(path)
+            logging.info(f"Loaded model from path: {path}")
+            return latest_versions
         model_version = latest_versions.version
         model_uri = f"models:/{model_name}/{model_version}"
         model = mlflow.pyfunc.load_model(model_uri)
