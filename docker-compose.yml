@@ -18,6 +18,9 @@ networks:
   back-tier:
   front-tier:
 
+volumes: 
+  grafana_data: {}
+
 services:
   prefect:
     image: prefecthq/prefect:2-python3.11
