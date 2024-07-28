@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir -r /opt/prefect/src/requirements.txt
 
 WORKDIR /opt/prefect/src/
 # Run our flow script when the container starts
-CMD ["python", "workflow.py"]
+CMD ["python", "multi_flows.py"]
