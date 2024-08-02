@@ -43,7 +43,7 @@ docker-compose up --build
 In case you want to check formating or linting you can use the following commands:
 
 ```batch
-pylint --recusive=y src/
+pylint src/
 black src/
 isort src/
 ```
