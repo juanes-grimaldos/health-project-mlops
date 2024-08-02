@@ -3,6 +3,29 @@
 Estimating Time from Referral to Procurement using Organ Retrieval and Collection of Health Information for Donation from [physionet.org](https://doi.org/10.13026/b1c0-3506).
 This project is linked with mlops datatalks first attempt to [MLOps Zoomcamp](https://github.com/DataTalksClub/mlops-zoomcamp) 2024 course!.
 
+# Estimating Time from Referral to Procurement
+## Objective
+The goal of this project is to predict the time interval between hospital referral and organ procurement using a machine learning model. This helps healthcare professionals estimate the procurement timeline, potentially improving the efficiency and planning of organ transplants.
+
+## Features Used
+
+We selected the following features to train our model, a description in deep is in html file or [physionet.org](https://doi.org/10.13026/b1c0-3506):
+
+- Age: The age of the patient. (Numerical)
+- Gender: The gender of the patient. (Categorical)
+- Race: The race of the patient. (Categorical)
+- HeightIn: The height of the patient in inches. (Numerical)
+- WeightKg: The weight of the patient in kilograms. (Numerical
+- blood_type: A combination of the ABO Blood Type and the Rh factor (positive or negative). (Categorial)
+- brain_death: A boolean indicating if brain death has occurred. (Categorical)
+
+## Target Variable
+
+The target variable, time_to_procurement, is calculated as the difference between time_procured and time_referred, converted into hours. The Random Forest model was chosen for its ability to handle complex, non-linear relationships and interactions among features. The model's performance was evaluated using metrics like Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE). Feature importance was visualized to understand the contribution of each feature to the model's predictions.
+
+## Model Used
+
+We used a Random Forest regression model for this task.
 
 # Load data
 This are the steps to follow in order to update credential access or cookies for the project to run propertly. this project has two ways of loading data. The first is by using a Cookie and updating you credenitals in the docker compose file, the second is updating your credenitals in the docker compose file. Both cases you need to sign up and generate credentials. Below I explain how to do it: 
