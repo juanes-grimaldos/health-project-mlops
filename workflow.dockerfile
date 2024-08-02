@@ -8,6 +8,9 @@ COPY requirements.txt /opt/prefect/src/requirements.txt
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r /opt/prefect/src/requirements.txt
 
+# Install wget
+RUN apt-get update && apt-get install -y wget
+
 WORKDIR /opt/prefect/src/
 # Run our flow script when the container starts
 CMD ["python", "multi_flows.py"]
