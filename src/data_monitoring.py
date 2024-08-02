@@ -11,7 +11,7 @@ from evidently.report import Report
 from evidently.metrics import (
     ColumnDriftMetric,
     DatasetDriftMetric,
-    DatasetMissingValuesMetric,
+    DatasetMissingValuesMetric
 )
 
 from pipelines.load_data import load_and_preprocess_data

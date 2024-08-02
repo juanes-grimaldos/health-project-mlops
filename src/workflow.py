@@ -55,7 +55,7 @@ def register_model(uri, experiment_name):
     Returns:
         None
     """
-    model_registry = ModelRegistry(tracking_uri=uri, experiment_name=experiment_name)    
+    model_registry = ModelRegistry(tracking_uri=uri, experiment_name=experiment_name)
     model_registry.register_model("random-forest")
 
 
