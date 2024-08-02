@@ -20,6 +20,10 @@ doi.org/10.13026/b1c0-3506)
 
 ![see image_readme/image.png if you don't see the image](image_readme/image.png)
 
+
+The next steps depends on what method you would use to download the data. I list here two main methods, the first is collecting a Cookie from a download from physionet website for only the data used. The second, is simply update the credentials in the docker compose file on root. 
+The following steps are the steps needed to run the pipelines and download the data successfully:
+
 ## Get Cookie Env Variable
 1. in order to download the data and get the Cookie, press F12 (or inspect element with right-click) go to "network" panel and click on download "referrals.csv"
 2. one csv file is downloaded, right-click on GET method that you should see on the network panel if you follow step 10. Then click on "copy cURL"
@@ -27,7 +31,7 @@ doi.org/10.13026/b1c0-3506)
 4. copy cookie and replace the new cookie on the docker compose env
 
 ## update user and password
-1. open docker-compose.yml and update PHYSIONET_USERNAME and PHYSIONET_PASSWORD
+1. open docker-compose.yml and update PHYSIONET_USERNAME and PHYSIONET_PASSWORD with your credentials. Do not include any aditional character. 
 
 
 # project run 
