@@ -12,3 +12,5 @@ psycopg==3.2.1
 psycopg_binary==3.2.1
 evidently==0.4.32
 matplotlib==3.9.1
+pylint==3.2.6
+black==24.8.0

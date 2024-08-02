@@ -30,9 +30,21 @@ doi.org/10.13026/b1c0-3506)
 1. open docker-compose.yml and update PHYSIONET_USERNAME and PHYSIONET_PASSWORD
 
 
-# project
-On this project you could upload to a cloud using docker compose up with the docker-compose.yml file on root directory. to run it locally you need a docker running on you machine and run the following comand: 
+# project run 
+On this project you could upload to a cloud using docker compose up with the docker-compose.yml file on root directory. To run it locally you need a docker running on you machine and run the following comand: 
 
 ```batch
 docker-compose up --build
 ```
+
+# Best practices
+
+## linting and formatting
+In case you want to check formating or linting you can use the following commands:
+
+```batch
+pylint --recusive=y src/
+black src/
+isort src/
+```
+The pylint code passed with 10/10 and black and isort do not suggest any changes
