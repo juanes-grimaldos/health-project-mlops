@@ -11,7 +11,7 @@ from evidently.report import Report
 from evidently.metrics import (
     ColumnDriftMetric,
     DatasetDriftMetric,
-    DatasetMissingValuesMetric
+    DatasetMissingValuesMetric,
 )
 
 from pipelines.load_data import load_and_preprocess_data
@@ -126,10 +126,13 @@ def calculate_metrics_postgresql(curr, i):
     share_missing_values = result['metrics'][2]['result']['current'][
         'share_of_missing_values'
     ]
+    mask1 = f"insert into {METRIC_TABLE}"
+    mask2 = "(timestamp, prediction_drift, num_drifted_columns, share_missing_values)"
+    mask3 = "values (%s, %s, %s, %s)"
+    query = mask1 + mask2 + mask3
 
     curr.execute(
-        f"insert into {METRIC_TABLE}(timestamp, prediction_drift, num_drifted_columns, share_missing_values) values (%s, %s, %s, %s)",
-        # pylint: disable=line-too-long
+        query,
         (
             begin + datetime.timedelta(i),
             prediction_drift,
