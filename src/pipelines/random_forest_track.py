@@ -1,18 +1,21 @@
-from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
-from hyperopt.pyll import scope
 import os
-import mlflow
+
 import numpy as np
+import mlflow
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
+from hyperopt import STATUS_OK, Trials, hp, tpe, fmin
+from hyperopt.pyll import scope
 from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import RandomForestRegressor
+
 
 def run_optimization_rf(
     num_trials: int,
-    X_train: pd.DataFrame, 
-    y_train: pd.DataFrame, 
-    X_val: pd.DataFrame, 
-    y_val: pd.DataFrame):
+    X_train: pd.DataFrame,
+    y_train: pd.DataFrame,
+    X_val: pd.DataFrame,
+    y_val: pd.DataFrame,
+):
     """
     Runs the optimization process for a Random Forest model.
 
@@ -43,7 +46,7 @@ def run_optimization_rf(
         'n_estimators': scope.int(hp.quniform('n_estimators', 10, 100, 1)),
         'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 10, 1)),
         'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 4, 1)),
-        'random_state': 42
+        'random_state': 42,
     }
 
     rstate = np.random.default_rng(42)  # for reproducible results
@@ -53,9 +56,9 @@ def run_optimization_rf(
         algo=tpe.suggest,
         max_evals=num_trials,
         trials=Trials(),
-        rstate=rstate
+        rstate=rstate,
     )
-    
+
     # fmin will return max_depth as a float for some reason
     for key in [
         'max_depth',
@@ -64,5 +67,5 @@ def run_optimization_rf(
     ]:
         if key in best_hyperparameters:
             best_hyperparameters[key] = int(best_hyperparameters[key])
-    
-    return best_hyperparameters     
+
+    return best_hyperparameters

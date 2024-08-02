@@ -1,8 +1,10 @@
-from mlflow.entities import ViewType
-from mlflow.tracking import MlflowClient
 import logging
+
 import mlflow
 from joblib import load
+from mlflow.entities import ViewType
+from mlflow.tracking import MlflowClient
+from mlflow.exceptions import MlflowException
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,7 +17,7 @@ class ModelRegistry:
         Args:
             tracking_uri (str): The URI of the MLflow tracking server.
             experiment_name (str): The name of the experiment to use.
-        
+
         Returns:
             None
         """
@@ -23,7 +25,6 @@ class ModelRegistry:
         self.tracking_uri = tracking_uri
         mlflow.set_tracking_uri(tracking_uri)
         mlflow.set_experiment(experiment_name)
-    
 
     def register_model(self, model_name):
         """
@@ -43,19 +44,12 @@ class ModelRegistry:
             experiment_ids=experiment.experiment_id,
             run_view_type=ViewType.ACTIVE_ONLY,
             max_results=1,
-            order_by=["metrics.rmse ASC"]
+            order_by=["metrics.rmse ASC"],
         )[0]
-
-        run_id = best_run.info.run_id
-
-        best_run.data.metrics
-
-        model_uri = f"runs:/{run_id}/sklearn-model"
+        model_uri = f"runs:/{best_run.info.run_id}/sklearn-model"
         best_run_test_rmse = best_run.data.metrics["rmse"]
-        logging.info(f"Best Run Test RMSE:{best_run_test_rmse}")
-
+        logging.info("Best Run Test RMSE: %s", str(best_run_test_rmse))
         mlflow.register_model(model_uri=model_uri, name=model_name)
-    
 
     def get_model_version(self, model_name):
         """
@@ -75,11 +69,11 @@ class ModelRegistry:
 
         try:
             latest_versions = client.get_latest_versions(name=model_name)[0]
-        except Exception as e:
-            logging.error(f"Error occurred while getting latest versions: {e}")
+        except MlflowException as e:
+            logging.error("Error occurred while getting latest versions: %s", str(e))
             path = 'start_models/random_forest.pkl'
             latest_versions = load(path)
-            logging.info(f"Loaded model from path: {path}")
+            logging.info("Loaded model from path: %s", path)
             return latest_versions
         model_version = latest_versions.version
         model_uri = f"models:/{model_name}/{model_version}"

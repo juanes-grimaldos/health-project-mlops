@@ -1,16 +1,18 @@
 import io
+import os
+import logging
+import subprocess
+
 import pandas as pd
 import requests
-import logging
-import os
-import subprocess
+
 
 def load_and_preprocess_data() -> pd.DataFrame:
     """
     Load and preprocess data from a CSV file.
 
     Returns:
-        pandas.DataFrame: The preprocessed DataFrame containing filtered and 
+        pandas.DataFrame: The preprocessed DataFrame containing filtered and
         transformed data.
     """
     url = "https://physionet.org/files/orchid/2.0.0/referrals.csv?download"
@@ -25,32 +27,30 @@ def load_and_preprocess_data() -> pd.DataFrame:
         'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-User': '?1',
         'Priority': 'u=0, i',
-        'TE': 'trailers'
+        'TE': 'trailers',
     }
 
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers, timeout=120)
     if response.status_code == 200:
         logging.info("File downloaded successfully.")
         df = pd.read_csv(io.StringIO(response.text), sep=',')
         df_pre = preprocess_data(df)
         return df_pre
-    elif response.status_code == 403:
+    if response.status_code == 403:
         logging.error("403 Forbidden error. Trying with a different method.")
-        if cookies is None and  not os.path.isfile("referrals.csv"):
-            logging.error("Environment variable"
-                          "COOKIE_API_REQUEST must be set.")
+        if cookies is None and not os.path.isfile("referrals.csv"):
+            logging.error("Environment variable COOKIE_API_REQUEST must be set.")
         return fallback_download()
-    else:
-        response.raise_for_status()
+    return None
 
 
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     Preprocess the data by filtering and transforming it.
-    
+
     Args:
         df (pd.DataFrame): The input DataFrame.
-        
+
     Returns:
         pd.DataFrame: The preprocessed DataFrame.
     """
@@ -65,14 +65,14 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     df_sub['tp_time_format'] = pd.to_datetime(df_sub[tp], format='ISO8601')
 
     # Calculate time to procurement
-    tr_t ='tr_time_format'
+    tr_t = 'tr_time_format'
     tp_t = 'tp_time_format'
     df_sub['time_to_procurement'] = (df_sub[tp_t] - df_sub[tr_t]).dt.days
 
     # Filter data for modeling
     df_model = df_sub.loc[
-        (df_sub['time_to_procurement'] <= 20) & 
-        (df_sub['time_to_procurement'] > 0) # one negative value
+        (df_sub['time_to_procurement'] <= 20)
+        & (df_sub['time_to_procurement'] > 0)  # one negative value
     ].copy()
 
     # Create blood type column
@@ -82,13 +82,14 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     # Return the preprocessed DataFrame
     return df_model
 
+
 def fallback_download() -> pd.DataFrame:
     """
-    Fallback function to download the CSV file using wget and 
+    Fallback function to download the CSV file using wget and
     load it into a pandas DataFrame.
 
     Returns:
-        pandas.DataFrame: The DataFrame containing the data from the 
+        pandas.DataFrame: The DataFrame containing the data from the
         downloaded CSV file.
     """
     url = "https://physionet.org/files/orchid/2.0.0/referrals.csv"
@@ -99,22 +100,25 @@ def fallback_download() -> pd.DataFrame:
     password = os.getenv("PHYSIONET_PASSWORD")
 
     if username is None or password is None:
-        logging.error("Environment variables \n"
-                      "PHYSIONET_USERNAME and PHYSIONET_PASSWORD must be set."
-                      "\n searching for local file...")
-    
+        logging.error(
+            "Environment variables \n"
+            "PHYSIONET_USERNAME and PHYSIONET_PASSWORD must be set."
+            "\n searching for local file..."
+        )
+
     if os.path.isfile(output_file):
         logging.info("File found. Loading the file.")
         df = pd.read_csv(output_file)
         df_pre = preprocess_data(df)
         return df_pre
-    else:
-        logging.info("File not found. Downloading the file.")
-        # Run the wget command to download the file
-        command = f'wget --user="{username}" --password="{password}" "{url}" -O {output_file}'
-        subprocess.run(command, shell=True, check=True)
-        
-        # Load the CSV file into a Pandas DataFrame
-        df = pd.read_csv(output_file)
-        df_pre = preprocess_data(df)
-        return df_pre
+    logging.info("File not found. Downloading the file.")
+    # Run the wget command to download the file
+    command = (
+        f'wget --user="{username}" --password="{password}" "{url}" -O {output_file}'
+    )
+    subprocess.run(command, shell=True, check=True)
+
+    # Load the CSV file into a Pandas DataFrame
+    df = pd.read_csv(output_file)
+    df_pre = preprocess_data(df)
+    return df_pre

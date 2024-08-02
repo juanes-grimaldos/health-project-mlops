@@ -1,5 +1,6 @@
-from sklearn.model_selection import train_test_split
 import pandas as pd
+from sklearn.model_selection import train_test_split
+
 
 def split_datasets(data: pd.DataFrame) -> dict:
     """
@@ -10,8 +11,13 @@ def split_datasets(data: pd.DataFrame) -> dict:
     """
 
     features = [
-        'Age', 'Gender', 'Race', 'HeightIn', 
-        'WeightKg', 'blood_type', 'brain_death'
+        'Age',
+        'Gender',
+        'Race',
+        'HeightIn',
+        'WeightKg',
+        'blood_type',
+        'brain_death',
     ]
 
     df_model = data.copy()
@@ -23,12 +29,12 @@ def split_datasets(data: pd.DataFrame) -> dict:
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
-    
+
     result = {
         'X_train': X_train,
         'X_test': X_test,
         'y_train': y_train,
-        'y_test': y_test
+        'y_test': y_test,
     }
-    
+
     return result

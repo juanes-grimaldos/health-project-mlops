@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
 import pytest
+
 from src.pipelines.load_data import load_and_preprocess_data
+
 
 @pytest.fixture
 def mock_pd_read_csv(mocker):
@@ -25,18 +27,19 @@ def test_load_and_preprocess_data(mock_pd_read_csv):
     df_model = load_and_preprocess_data()
 
     # 1. Check for expected columns presence
-    expected_columns = set([
-        "time_referred",
-        "time_procured",
-        "tr_time_format",
-        "tp_time_format",
-        "time_to_procurement",
-        "ABO_BloodType",
-        "ABO_Rh",
-        "blood_type",
-    ])
+    expected_columns = set(
+        [
+            "time_referred",
+            "time_procured",
+            "tr_time_format",
+            "tp_time_format",
+            "time_to_procurement",
+            "ABO_BloodType",
+            "ABO_Rh",
+            "blood_type",
+        ]
+    )
     assert set(df_model.columns) >= expected_columns
 
     # 3. time_to_procurement type
     assert pd.api.types.is_numeric_dtype(df_model["time_to_procurement"])
-
