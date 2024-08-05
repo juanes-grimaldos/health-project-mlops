@@ -64,7 +64,7 @@ On this project you could upload to a cloud using docker compose up with the doc
 docker-compose up --build
 ```
 
-after a few minutes, port 4200 will be in use by prefect server, port 5000 will be in use by mlflow server, port 5232, and 8080 will be in use by postgreSQL and adminer respectivle. And port 300 will be use by grafana. At the end port 9696 will be listening to predict values. An example of cur code is below:
+after a few minutes, port 4200 will be in use by prefect server, port 5000 will be in use by mlflow server, port 5232, and 8080 will be in use by postgreSQL and adminer respectivle. And port 3000 will be use by grafana. At the end, port 9696 will be listening to predict values. An example of curl code is below:
 
 ```curl
 curl --location 'http://localhost:9696/predict' \
@@ -122,4 +122,4 @@ pylint src/
 black src/
 isort src/
 ```
-The pylint code passed with 10/10 and black and isort do not suggest any changes
+The pylint code passed with 10/10 and black and isort do not suggest any changes.
