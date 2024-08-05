@@ -5,8 +5,8 @@ x-environment: &default-environment
   PREFECT_UI_URL: "http://127.0.0.1:4200/api"
   PREFECT_SERVER_API_HOST: "0.0.0.0"
   MLFLOW_URI: "http://mlflow:5000"
-  PHYSIONET_USERNAME: None
-  PHYSIONET_PASSWORD: None
+  PHYSIONET_USERNAME: juanesgrimaldos
+  PHYSIONET_PASSWORD: ;e99;aFLptwQmMp
   COOKIE_API_REQUEST: "_ga=GA1.2.263637740.1720827977; _ga_YKC8ZQQ4FF=GS1.1.1722094447.5.1.1722094879.0.0.0; csrftoken=dupoQ7jFXMN2dE6MrVvg2F08528jeroc; _gid=GA1.2.1133650335.1722094448; sessionid=nx4uuw1er9ox7aqf6gmld8cc2u2fkgzx"
   DB_HOST: db
   DB_PORT: 5432
@@ -91,3 +91,15 @@ services:
       - back-tier
       - front-tier
     restart: always
+  
+  app:
+    build:
+      context: .
+      dockerfile: output.dockerfile
+    environment:
+      <<: *default-environment
+    ports:
+      - "9696:9696"
+    networks:
+      - backend-server
+      - front-tier

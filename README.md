@@ -64,6 +64,54 @@ On this project you could upload to a cloud using docker compose up with the doc
 docker-compose up --build
 ```
 
+after a few minutes, port 4200 will be in use by prefect server, port 5000 will be in use by mlflow server, port 5232, and 8080 will be in use by postgreSQL and adminer respectivle. And port 300 will be use by grafana. At the end port 9696 will be listening to predict values. An example of cur code is below:
+
+```curl
+curl --location 'http://localhost:9696/predict' \
+--header 'Content-Type: application/json' \
+--header 'Content-Type: application/json' \
+--data '{
+    "Age": 60,
+    "HeightIn": 68,
+    "WeightKg": 70,
+    "brain_death": 0,
+    "Gender_M": 1,
+    "Race_Hispanic": 0,
+    "Race_Other / Unknown": 0,
+    "Race_White / Caucasian": 1,
+    "blood_type_A-Negative ": 0,
+    "blood_type_A-Positive": 0,
+    "blood_type_A-Positive ": 0,
+    "blood_type_A1-Negative": 0,
+    "blood_type_A1-Negative ": 0,
+    "blood_type_A1-Positive": 0,
+    "blood_type_A1-Positive ": 0,
+    "blood_type_A1B-Negative": 0,
+    "blood_type_A1B-Negative ": 0,
+    "blood_type_A1B-Positive": 0,
+    "blood_type_A1B-Positive ": 0,
+    "blood_type_A2-Negative": 0,
+    "blood_type_A2-Negative ": 0,
+    "blood_type_A2-Positive": 0,
+    "blood_type_A2-Positive ": 0,
+    "blood_type_A2B-Negative": 0,
+    "blood_type_A2B-Positive": 1,
+    "blood_type_A2B-Positive ": 0,
+    "blood_type_AB-Negative": 0,
+    "blood_type_AB-Negative ": 0,
+    "blood_type_AB-Positive": 0,
+    "blood_type_AB-Positive ": 0,
+    "blood_type_B-Negative": 0,
+    "blood_type_B-Negative ": 0,
+    "blood_type_B-Positive": 0,
+    "blood_type_B-Positive ": 0,
+    "blood_type_O-Negative": 0,
+    "blood_type_O-Negative ": 0,
+    "blood_type_O-Positive": 0,
+    "blood_type_O-Positive ": 0
+}'
+```
+
 # Best practices
 
 ## linting and formatting
