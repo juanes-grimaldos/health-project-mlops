@@ -111,6 +111,7 @@ curl --location 'http://localhost:9696/predict' \
     "blood_type_O-Positive ": 0
 }'
 ```
+With this, you will get the expected days to get a donation from donor info. 
 
 # Best practices
 
